@@ -9,7 +9,22 @@ export async function POST(request: Request) {
     await dbConnect()
 
     try {
-        const {username, email, password} = await request.json()
+        const {username, email, password} = await request.json();
+
+        const existingUserVerifiedByUserModel = await UserModel.findOne({
+            username,
+            isVerified: true,
+        })
+
+        if(existingUserVerifiedByUserModel){
+            return Response.json({
+                success: false
+            }, 
+            {
+                status: 400
+            }
+        )}
+
     } catch (error) {
         console.error('Error registering user ', error);
         return Response.json(
